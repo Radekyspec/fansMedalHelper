@@ -5,11 +5,19 @@
 <h1> 新 B 站粉丝牌助手
 </h1>
 
-<p>当前版本：0.3.4</p>
+<p>当前版本：0.3.4-r0.1<br>此版本将作为个人修改版，随上游更新，不会并入主仓库</p>
 
  </div>
 
-**TODO**
+**NEW**
+
+- [x] 自动更新登录令牌（云函数环境无法使用）
+- [x] 更改方法变量命名，使其符合[Python Naming Conventions](https://visualgit.readthedocs.io/en/latest/pages/naming_convention.html)
+- [x] 修复一系列bug
+
+---
+
+**FEATURES**
 
 -   [x] 每日直播区签到
 -   [x] 每日点赞 3 次直播间 （200\*3 亲密度）
