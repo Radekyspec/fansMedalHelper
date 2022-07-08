@@ -157,17 +157,15 @@ class BiliApi:
             "page": 1,
             "page_size": 50,
         }
-        first_flag = True
         while True:
             data = await self.__get(url, params=SingableDict(params).signed, headers=self.headers)
-            if first_flag and data['special_list']:
-                for item in data['special_list']:
-                    yield item
+            if params["page"] == 1 and data['special_list']:
                 self.u.worn_medal = data['special_list'][0]
-                first_flag = False
+                for item in data["special_list"]:
+                    yield item
             for item in data['list']:
                 yield item
-            if not data['list']:
+            if not data["page_info"]["has_more"]:
                 break
             params['page'] += 1
 

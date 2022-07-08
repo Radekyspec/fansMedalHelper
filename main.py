@@ -28,7 +28,7 @@ try:
         assert users["DANMAKU_CD"] >= 0, "DANMAKU_CD参数错误"
         assert users["WATCHINGLIVE"] in [0, 1], "WATCHINGLIVE参数错误"
         assert users["WEARMEDAL"] in [0, 1], "WEARMEDAL参数错误"
-        config: dict[str, int] = {
+        config = {
             "ASYNC": users["ASYNC"],
             "LIKE_CD": users["LIKE_CD"],
             "SHARE_CD": users["SHARE_CD"],
