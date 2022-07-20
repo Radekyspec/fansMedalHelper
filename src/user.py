@@ -117,7 +117,7 @@ class BiliUser:
 
     async def async_like_and_share(self, failed_medals=None):
         """
-        点赞 *3 分享 * 5 
+        点赞, 分享
         """
         if failed_medals is None:
             failed_medals = []
@@ -154,12 +154,12 @@ class BiliUser:
             await asyncio.sleep(10)
             await self.get_medals()  # 刷新勋章
             self.log.log("SUCCESS", "点赞、分享任务完成")
-            finally_medals = [medal for medal in self.medals_lower_20 if medal["medal"]["today_feed"] >= 1100]
-            failed_medals = [medal for medal in self.medals_lower_20 if medal["medal"]["today_feed"] < 1100]
-            msg = "20级以下牌子共 {} 个,完成任务 {} 个亲密度大于等于1100".format(
+            finally_medals = [medal for medal in self.medals_lower_20 if medal["medal"]["today_feed"] >= 200]
+            failed_medals = [medal for medal in self.medals_lower_20 if medal["medal"]["today_feed"] < 200]
+            msg = "20级以下牌子共 {} 个,完成任务 {} 个亲密度大于等于200".format(
                 len(self.medals_lower_20), len(finally_medals))
             self.log.log("INFO", msg)
-            self.log.log("WARNING", "小于1100或失败房间: {}... {}个".format(
+            self.log.log("WARNING", "小于200或失败房间: {}... {}个".format(
                 " ".join([medals["anchor_info"]["nick_name"] for medals in failed_medals[:5]]), len(failed_medals)))
             if self.retry_times > self.max_retry_times:
                 self.log.log("ERROR", "任务重试次数过多,停止任务")
@@ -228,18 +228,18 @@ class BiliUser:
         for medal in self.medals_lower_20:
             today_feed = medal["medal"]["today_feed"]
             nick_name = medal["anchor_info"]["nick_name"]
-            if today_feed >= 1300:
+            if today_feed >= 1500:
                 name_list1.append(nick_name)
-            elif 1200 <= today_feed < 1300:
+            elif 1300 < today_feed <= 1400:
                 name_list2.append(nick_name)
-            elif 1100 <= today_feed < 1200:
+            elif 1200 < today_feed <= 1300:
                 name_list3.append(nick_name)
-            elif today_feed < 1100:
+            elif today_feed <= 1200:
                 name_list4.append(nick_name)
         self.message.append(f"【{self.name}】 今日亲密度获取情况如下（20级以下）：")
 
         for length, name in zip([name_list1, name_list2, name_list3, name_list4],
-                                ["【1300及以上】", "【1200至1300】", "【1100至1200】", "【1100以下】"]):
+                                ["【1500】", "【1300至1400】", "【1200至1300】", "【1200以下】"]):
             if len(length) > 0:
                 self.message.append(
                     f"{name}" + " ".join(length[:5]) + f"{' 等' if len(length) > 5 else ''}" + f" {len(length)}个")
@@ -248,9 +248,10 @@ class BiliUser:
 
     async def watching_live(self):
         if not self.config["WATCHINGLIVE"]:
-            self.log.log("INFO", "每日30分钟任务关闭")
+            self.log.log("INFO", "每日观看直播任务关闭")
             return
-        self.log.log("INFO", "每日30分钟任务开始")
+        heart_max = self.config['WATCHINGLIVE']
+        self.log.log("INFO", f"每日{heart_max}分钟任务开始")
         heart_num = 0
         while True:
             tasks = []
@@ -261,11 +262,11 @@ class BiliUser:
             heart_num += 1
             self.log.log(
                 "INFO",
-                f"{' '.join([medal['anchor_info']['nick_name'] for medal in self.medals_lower_20[:5]])} 等共 {len(self.medals_lower_20)} 个房间的第{heart_num}次心跳包已发送（{heart_num}/{30}）")
+                f"{' '.join([medal['anchor_info']['nick_name'] for medal in self.medals_lower_20[:5]])} 等共 {len(self.medals_lower_20)} 个房间的第{heart_num}次心跳包已发送（{heart_num}/{heart_max}）")
             await asyncio.sleep(60)
-            if heart_num >= 30:
+            if heart_num >= heart_max:
                 break
-        self.log.log("SUCCESS", "每日30分钟任务完成")
+        self.log.log("SUCCESS", f"每日{heart_max}分钟任务完成")
 
     async def sign_in_groups(self):
         if not self.config["SIGNINGROUP"]:

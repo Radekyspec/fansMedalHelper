@@ -181,7 +181,7 @@ class BiliApi:
             "ts": int(time.time()),
             "roomid": room_id,
         }
-        for _ in range(3):
+        for _ in range(1):
             await self.__post(url, data=SingableDict(data).signed, headers=self.headers.update({
                 "Content-Type": "application/x-www-form-urlencoded",
             }))
@@ -200,7 +200,7 @@ class BiliApi:
             "interact_type": 3,
             "roomid": room_id,
         }
-        for _ in range(5):
+        for _ in range(1):
             await self.__post(url, data=SingableDict(data).signed, headers=self.headers.update({
                 "Content-Type": "application/x-www-form-urlencoded",
             }))
@@ -407,7 +407,7 @@ class BiliApi:
             "access_key": self.u.access_key,
             "actionKey": "appkey",
             "appkey": Crypto.KEY,
-            "ts": int(time.time())
+            "ts": int(time.time()),
         }
         groups_list = (await self.__get(url, params=SingableDict(params).signed, headers=self.headers))['list']
         for group in groups_list:
