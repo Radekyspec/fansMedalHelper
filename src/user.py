@@ -243,6 +243,17 @@ class BiliUser:
             if len(length) > 0:
                 self.message.append(
                     f"{name}" + " ".join(length[:5]) + f"{' 等' if len(length) > 5 else ''}" + f" {len(length)}个")
+        if self.worn_medal:
+            self.message.append(
+                f"【当前佩戴】「{self.worn_medal['medal']['medal_name']}」({self.worn_medal['anchor_info']['nick_name']}) {self.worn_medal['medal']['level']} 级")
+            if self.worn_medal["medal"]["level"] < 20 and self.worn_medal["medal"]["today_feed"] != 0:
+                from datetime import datetime, timedelta
+                need = self.worn_medal["medal"]["next_intimacy"] - self.worn_medal["medal"]["intimacy"]
+                need_days = need // 1500 + 1
+                end_date = datetime.now() + timedelta(days=need_days)
+                self.message.append(f"今日已获取亲密度 {self.worn_medal['medal']['today_feed']} (B站结算有延迟，请耐心等待)")
+                self.message.append(
+                    f"距离下一级还需 {need} 亲密度 预计需要 {need_days} 天 ({end_date.strftime('%Y-%m-%d')}, 以每日 1500 亲密度计算)")
         await self.session.close()
         return self.message + self.errmsg + ["---"]
 
